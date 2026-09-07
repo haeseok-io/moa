@@ -1,0 +1,49 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: moa-backend
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: ${DB_URL}
+      DB_TEST_URL: ${DB_TEST_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    command: ./mvnw spring-boot:run
+    depends_on:
+      - mysql
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: moa-frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: npm run dev -- --host
+    depends_on:
+      - backend
+
+  mysql:
+    image: mysql:8.4
+    container_name: moa-database
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "@moa!database@root"
+      MYSQL_DATABASE: moa
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: "@moa!database@admin"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
