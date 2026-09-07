@@ -14,6 +14,7 @@
                     @submit="register"
                 />
             </div>
+            테스트
         </div>
     </main>
 </template>
