@@ -13,6 +13,7 @@ services:
       DB_TEST_URL: ${DB_TEST_URL}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+      FRONTEND_URL: ${FRONTEND_URL}
     command: ./mvnw spring-boot:run
     depends_on:
       - mysql
