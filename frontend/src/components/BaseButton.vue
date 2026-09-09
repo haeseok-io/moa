@@ -1,6 +1,7 @@
 <template>
     <button
         :type="props.type"
+        :disabled="props.disabled"
         :class="[
             'transition font-medium cursor-pointer',
             themeClass,

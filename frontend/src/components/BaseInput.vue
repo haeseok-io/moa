@@ -3,7 +3,7 @@
         <label
             v-if="label"
             :for="id"
-            class="text-gray-400"
+            class="text-gray-600"
         >
             {{ label }}
         </label>
@@ -21,6 +21,7 @@
             >
             <slot name="append" />
             <p v-if="error" class="absolute bottom-0 text-sm text-red-500">{{ error }}</p>
+            <p v-if="success" class="absolute bottom-0 text-sm text-green-500">{{ success }}</p>
         </div>
     </div>
 </template>
@@ -41,7 +42,8 @@
         disabled: Boolean,
         readonly: Boolean,
         maxlength: Number,
-        error: String
+        error: String,
+        success: String,
     })
 
     const emit = defineEmits(['update:modelValue'])

@@ -10,8 +10,8 @@
             <div class="login__content w-[800px] h-full bg-white flex items-center px-10">
                 <AuthForm
                     v-model="form"
-                    mode="login"
                     @submit="login"
+                    :is-email-send="isEmailSend"
                 />
             </div>
         </div>
@@ -19,22 +19,23 @@
 </template>
 
 <script setup>
-    import { reactive } from 'vue'
+    import { reactive, ref } from 'vue'
     import { useRouter } from 'vue-router'
     import { useAuthStore } from '@/stores/auth'
     import { isValidEmail } from '@/utils/validation';
     import AuthForm from '@/components/AuthForm.vue';
+    import axios from 'axios';
 
     const router = useRouter()
     const auth = useAuthStore();
+    const isEmailSend = ref(false)
 
     const form = reactive({
         email: { value: '', error: '' }
     })
 
-    const login = () => {
-
-        // 유효성 체크
+    const login = async () => {
+        // Check
         if( !form.email.value ) {
             form.email.error = '이메일을 입력해주세요.'
             return
@@ -43,18 +44,21 @@
             form.email.error = '이메일 형식을 확인해주세요.'
             return
         }
+        
+        // Data
+        form.email.error = '';
 
-        // 임시 로그인 구현 이메일별 닉네임 정보 지정
-        let userInfo = {id: 0, nickname: 'test', email: form.email.value}
-        if( form.email.value==='haeseok_@naver.com' ) {
-            userInfo = {id: 1, nickname: 'haeseok', email: form.email.value}
+        // Process
+        try {
+            // 이메일 발송
+            await axios.post('http://localhost:8080/api/auth/email/request', {email: form.email.value});
+            
+            // 이메일 발송 성공
+            isEmailSend.value = true;
+            form.email.success = '이메일이 발송되었습니다.';
+        } catch(error) {
+            form.email.error = error;
         }
-        if( form.email.value==='haeseok@gmail.com' ) {
-            userInfo = {id: 2, nickname: '정해석', email: form.email.value}
-        }
-
-        auth.login(userInfo, 'test');
-        router.push('/')
     }
 </script>
 
